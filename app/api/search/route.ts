@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
         stats: typeof g.playerCount === "number" ? g.playerCount.toLocaleString() + " playing" : ""
       }));
     } else if (category === "users" || category === "avatars") {
-      const data = await getJson("https://users.roblox.com/v1/users/search?keyword=" + enc(q) + "&limit=18");
+      // Roblox's users search endpoint accepts at most 10 results per request.
+      const data = await getJson("https://users.roblox.com/v1/users/search?keyword=" + enc(q) + "&limit=10");
       results = ((data.data || []) as any[]).map(u => ({
         id: u.id, name: u.displayName || u.name, description: u.name ? "@" + u.name : "Roblox player",
         subtitle: u.hasVerifiedBadge ? "Verified player" : "Player profile",
